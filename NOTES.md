@@ -9,3 +9,9 @@
 - Accesskey has to be created on GUI if it is the first time to create because CLI needs the accesskey.
 
 - Lock file should be better to be added in Git repository.
+
+
+## Destroy procedures
+
+aws ec2 delete-key-pair --key-name tf-lab-key
+

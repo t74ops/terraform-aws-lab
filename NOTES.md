@@ -10,8 +10,10 @@
 
 - Lock file should be better to be added in Git repository.
 
+- Add AMI, SG, EC2
 
 ## Destroy procedures
 
-aws ec2 delete-key-pair --key-name tf-lab-key
+- terraform destroy
+- aws ec2 delete-key-pair --key-name tf-lab-key
 

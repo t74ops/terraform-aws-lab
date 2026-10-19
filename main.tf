@@ -62,4 +62,61 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
+resource "aws_security_group" "ec2_sg" {
+  name = "tf-lab-ec2-sg"
+  description = "Security group for ec2 instance"
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    description = "SSH"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = [var.my_ip]
+  }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "tf-lab-ec2-sg"
+  }
+}
+
+data "aws_ami" "amazon_linux_2023" {
+  most_recent = true
+  owners = ["amazon"]
+
+  filter {
+    name = "name"
+    values = ["al2023-ami-2023*"]
+  }
+
+  filter {
+    name = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+resource "aws_instance" "ec2_server" {
+  ami = data.aws_ami.amazon_linux_2023.id
+  instance_type = "t3.micro"
+  key_name = var.key_name
+  subnet_id = aws_subnet.public.id
+  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
+  
+  tags = {
+    Name = "tf-lab-ec2"
+  }
+}
+
 
